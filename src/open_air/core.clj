@@ -13,5 +13,13 @@
    (:body
     (http/get (current-tracks-url)))))
 
+(defn format-track [t]
+  (select-keys t
+               ["album" "artist" "title" "start_time" "label" "label_num"]))
+
+
+(defn format-tracks [tracks]
+  (map format-track tracks))
 
 (def sample-tracks (current-tracks))
+(first (format-tracks sample-tracks))
