@@ -1,12 +1,20 @@
-(ns open-air.core)
+(ns open-air.core
+  (:require [cheshire.core :as json]
+            [clj-http.client :as http]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(def url
+  (java.net.URL.
+    "http://www.cpr.org/openair/playlist"))
 
+(println "url is: " url)
 
-(def pizza "hi")
+(def page-contents
+  (html/html-resource url))
 
+(println page-contents)
 
-(defn some-fn [arg] (println arg))
+(html/select page-contents [:div#main])
+(println (count (html/select page-contents [:.list-item])))
+
+(count (str (System/currentTimeMillis)))
+(count (str "1445347939413"))
