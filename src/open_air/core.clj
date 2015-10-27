@@ -21,5 +21,17 @@
 (defn format-tracks [tracks]
   (map format-track tracks))
 
-(def sample-tracks (current-tracks))
-(first (format-tracks sample-tracks))
+(def rdio-base-url "https://services.rdio.com/api/1/")
+
+(def token (str "Bearer " (System/getenv "RDIO_TOKEN")))
+
+(defn rdio-query [query]
+  (http/post
+   (str rdio-base-url "search")
+   {:query-params {"query" query
+                   "method" "search"
+                   "types" "Track"}
+    :throw-exceptions false
+    :headers {"Authorization" token}}))
+
+
