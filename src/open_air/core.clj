@@ -102,15 +102,35 @@
   (if-let [rdio-track (rdio-query (str (get oa-info "artist")
                                        " "
                                        (get oa-info "title")))]
-    (if-let [todays-playlist (current-playlist)]
-      (rdio-add-track (get todays-playlist "key")
-                      (get rdio-track "key"))
-      (rdio-create-playlist
-       (current-playlist-name)
-       (get rdio-track "key")))))
+    (do
+      (println "Found RDIO track for " (get oa-info "title") ": " (get rdio-track "key"))
+      (if-let [todays-playlist (current-playlist)]
+        (do
+          (println "found existing PL: " (get todays-playlist "key"))
+          (println
+           (rdio-add-track (get todays-playlist "key")
+                           (get rdio-track "key"))))
+        (do
+          (println "no existing PL found, will try to create")
+          (rdio-create-playlist
+           (current-playlist-name)
+           (get rdio-track "key")))))))
 
-;; 1 - find all the recent tracks
-;; 2 - Create a Playlist for today's date
-;; 3 - Need to add recent tracks to the Playlist
-;;     for today
-;;     - ?? How do we avoid double-adding tracks
+(defn process-track-list [tracks]
+  (doseq [t tracks]
+    (println "Will process track: " t)
+    (process-track t)))
+
+;; 1 - [X] find all the recent tracks
+;; 2 - [X] Create a Playlist for today's date
+;; 3 - [X] Need to add recent tracks to the Playlist
+;;         for today
+;;         - ?? How do we avoid double-adding tracks
+
+
+;; Next Steps:
+;; figuring out long-running processing
+;; * how to grab the current playlist once and hang onto it
+;;   (atom)
+;; * how to store a list of all tracks and maybe try to diff them?
+;; * or tell rdio to just ignore dupes?
