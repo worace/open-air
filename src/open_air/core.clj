@@ -78,16 +78,6 @@
     pl
     "To do - create the playlist"))
 
-
-(def some-tracks (format-tracks (current-tracks)))
-
-(let [t {"title" "Monster Mash" "artist" "Bobby “Boris” Pickett"}
-      res (rdio-query (str (get t "artist") " " (get t "title")))]
-  (if res
-    (rdio-create-playlist
-     (current-playlist-name)
-     [(get res "key")])))
-
 (defn rdio-add-track [pl-key t-key]
   (json/parse-string
    (:body
