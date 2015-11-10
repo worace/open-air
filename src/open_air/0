@@ -78,39 +78,14 @@
     pl
     "To do - create the playlist"))
 
-
-(def some-tracks (format-tracks (current-tracks)))
-
-(let [t {"title" "Monster Mash" "artist" "Bobby “Boris” Pickett"}
-      res (rdio-query (str (get t "artist") " " (get t "title")))]
-  (if res
-    (rdio-create-playlist
-     (current-playlist-name)
-     [(get res "key")])))
-
-(defn rdio-add-track [pl-key t-key]
-  (json/parse-string
-   (:body
-    (http/post
-     rdio-base-url
-     {:headers {"Authorization" token}
-      :query-params {"method" "addToPlaylist"
-                     "playlist" pl-key
-                     "tracks" [t-key]}}))))
-
-(defn process-track [oa-info]
-  (if-let [rdio-track (rdio-query (str (get oa-info "artist")
-                                       " "
-                                       (get oa-info "title")))]
-    (if-let [todays-playlist (current-playlist)]
-      (rdio-add-track (get todays-playlist "key")
-                      (get rdio-track "key"))
-      (rdio-create-playlist
-       (current-playlist-name)
-       (get rdio-track "key")))))
-
 ;; 1 - find all the recent tracks
 ;; 2 - Create a Playlist for today's date
 ;; 3 - Need to add recent tracks to the Playlist
 ;;     for today
 ;;     - ?? How do we avoid double-adding tracks
+
+
+(def some-tracks (format-tracks (current-tracks)))
+
+(let [t (first some-tracks)]
+  (rdio-query (str (get some-tracks "artist") " " (get some-tracks "title"))))
