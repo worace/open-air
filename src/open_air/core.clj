@@ -133,8 +133,13 @@
     (while @running?
       (println "will check for new tracks!")
       (scrape-new-tracks!)
-      (Thread/sleep 120000))
+      (Thread/sleep 30000))
     (println "Running switched off; will exit loop.")))
+
+(defn -main [&args]
+  (println "STARTING SCRAPER")
+  (scrape-forever!)
+  (while true (Thread/sleep 10000)))
 
 ;; 1 - [X] find all the recent tracks
 ;; 2 - [X] Create a Playlist for today's date
