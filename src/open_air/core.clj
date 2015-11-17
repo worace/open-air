@@ -27,7 +27,8 @@
 (def rdio-base-url "https://services.rdio.com/api/1/")
 
 (def token
-  (str "Bearer " (System/getenv "RDIO_TOKEN")))
+  (str "Bearer "
+       (System/getenv "RDIO_TOKEN")))
 
 (defn rdio-query [query]
   (first
