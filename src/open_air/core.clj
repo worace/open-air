@@ -1,9 +1,11 @@
 (ns open-air.core
   (:require [cheshire.core :as json]
+            [clojure.set :refer [difference union]]
             [clj-http.client :as http]))
 
 (def base-url "http://playlist.cprnetwork.org/api/playlistCO?n=")
 (def todays-playlist (atom nil))
+(defonce existing-tracks (atom #{}))
 
 (defn current-tracks-url []
   (str base-url (System/currentTimeMillis)))
@@ -85,6 +87,7 @@
      {:headers {"Authorization" token}
       :query-params {"method" "addToPlaylist"
                      "playlist" pl-key
+                     "duplicateHandling" "ignore"
                      "tracks" [t-key]}}))))
 
 (defn process-track [oa-info]
@@ -108,10 +111,21 @@
                        "result"))
           (println "todays-playlist: " @todays-playlist))))))
 
-(defn process-track-list [tracks]
+(defn process-track-list! [tracks]
   (doseq [t tracks]
     (println "Will process track: " t)
     (process-track t)))
+
+(defn scrape-new-tracks! []
+  (let [current-tracks (into #{} (format-tracks (current-tracks)))
+        new-tracks (difference current-tracks @existing-tracks)]
+    (println "Have " (count @existing-tracks) " existing tracks")
+    (println "Found " (count new-tracks) " new tracks")
+    (println "Here they are!:::")
+    (println new-tracks)
+    (process-track-list! new-tracks)
+    (swap! existing-tracks union new-tracks)
+    (println "added new tracks; now have " (count @existing-tracks) " ext tracks")))
 
 ;; 1 - [X] find all the recent tracks
 ;; 2 - [X] Create a Playlist for today's date
