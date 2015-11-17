@@ -136,7 +136,7 @@
       (Thread/sleep 30000))
     (println "Running switched off; will exit loop.")))
 
-(defn -main [&args]
+(defn -main [& args]
   (println "STARTING SCRAPER")
   (scrape-forever!)
   (while true (Thread/sleep 10000)))
