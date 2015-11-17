@@ -3,6 +3,7 @@
             [clj-http.client :as http]))
 
 (def base-url "http://playlist.cprnetwork.org/api/playlistCO?n=")
+(def todays-playlist (atom nil))
 
 (defn current-tracks-url []
   (str base-url (System/currentTimeMillis)))
@@ -55,12 +56,15 @@
    (.format (java.text.SimpleDateFormat. "MMMM d") (java.util.Date.))))
 
 (defn current-playlist []
-  (first
-   (filter
-   (fn [p]
-     (= (current-playlist-name)
-        (get p "name")))
-   (rdio-playlists))))
+  (if @todays-playlist
+    @todays-playlist
+    (reset! todays-playlist
+            (first
+             (filter
+              (fn [p]
+                (= (current-playlist-name)
+                   (get p "name")))
+              (rdio-playlists))))))
 
 (defn rdio-create-playlist [name tracks]
   (json/parse-string
@@ -72,11 +76,6 @@
                      "name" name
                      "description" "Open Air tracks"
                      "tracks" tracks}}))))
-
-(defn todays-playlist []
-  (if-let [pl (current-playlist)]
-    pl
-    "To do - create the playlist"))
 
 (defn rdio-add-track [pl-key t-key]
   (json/parse-string
@@ -102,9 +101,12 @@
                            (get rdio-track "key"))))
         (do
           (println "no existing PL found, will try to create")
-          (rdio-create-playlist
-           (current-playlist-name)
-           (get rdio-track "key")))))))
+          (reset! todays-playlist
+                  (get (rdio-create-playlist
+                        (current-playlist-name)
+                        (get rdio-track "key"))
+                       "result"))
+          (println "todays-playlist: " @todays-playlist))))))
 
 (defn process-track-list [tracks]
   (doseq [t tracks]
@@ -116,6 +118,16 @@
 ;; 3 - [X] Need to add recent tracks to the Playlist
 ;;         for today
 ;;         - ?? How do we avoid double-adding tracks
+
+
+
+;; approaches to diff-adding tracks
+
+;; 1 - just tell RDIO to ignore dupes and add everything
+;; 2 - keep a list of tracks seen so far and diff the list and
+;;     only add new ones
+;; 3 - maybe possible to use the timestamp on the json endpoint
+;;     to pull only recent stuff
 
 
 ;; Next Steps:
