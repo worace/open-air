@@ -6,6 +6,7 @@
 (def base-url "http://playlist.cprnetwork.org/api/playlistCO?n=")
 (def todays-playlist (atom nil))
 (defonce existing-tracks (atom #{}))
+(def running? (atom true))
 
 (defn current-tracks-url []
   (str base-url (System/currentTimeMillis)))
@@ -126,6 +127,14 @@
     (process-track-list! new-tracks)
     (swap! existing-tracks union new-tracks)
     (println "added new tracks; now have " (count @existing-tracks) " ext tracks")))
+
+(defn scrape-forever! []
+  (future
+    (while @running?
+      (println "will check for new tracks!")
+      (scrape-new-tracks!)
+      (Thread/sleep 120000))
+    (println "Running switched off; will exit loop.")))
 
 ;; 1 - [X] find all the recent tracks
 ;; 2 - [X] Create a Playlist for today's date
