@@ -1,4 +1,4 @@
-## OpenAir
+* OpenAir
 
 Since the [[http://www.theverge.com/2015/11/20/9772784/rdio-shutdown-free-tier-pandora-acquisition][shutdown of Rdio]], this library is sadly diminished in utility.
 
@@ -8,7 +8,7 @@ RIP Rdio, was fun while it lasted.
 
 Obvious big TODO: port the playlist construction logic to Spotify.
 
-## License
+* License
 
 Copyright © 2015 Horace Williams
 
