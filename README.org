@@ -1,0 +1,16 @@
+## OpenAir
+
+Since the [[http://www.theverge.com/2015/11/20/9772784/rdio-shutdown-free-tier-pandora-acquisition][shutdown of Rdio]], this library is sadly diminished in utility.
+
+While Rdio was around, this project would run a daemon that regularly scraped the public playlist of Colorado Public Radio's [[http://www.cpr.org/openair/playlist][Open Air]] new music station and added its tracks to an Rdio playlist for that date. This way you could check out, for example "Open Air Playlist: June 25, 2015" and listen to any of the tracks Open Air had played that day which were also available on Rdio.
+
+RIP Rdio, was fun while it lasted.
+
+Obvious big TODO: port the playlist construction logic to Spotify.
+
+## License
+
+Copyright © 2015 Horace Williams
+
+Distributed under the Eclipse Public License either version 1.0 or (at
+your option) any later version.
